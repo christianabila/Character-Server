@@ -22,8 +22,9 @@ public class CharacterServer implements Runnable {
 		// TODO Auto-generated method stub
 		try {
 			Random r = new Random();
-			
-			byte[] randomChar = ByteBuffer.allocate(4).putInt(r.nextInt(256)).array();
+			int random = r.nextInt(128);
+			System.out.println(random);
+			byte[] randomChar = ByteBuffer.allocate(4).putInt(random).array();
 			p = new DatagramPacket(randomChar, randomChar.length, p.getAddress(), p.getPort());
 			server.send(p);
 
