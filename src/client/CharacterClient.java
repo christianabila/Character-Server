@@ -2,6 +2,7 @@ package client;
 
 import java.io.IOException;
 import java.net.*;
+import java.util.Scanner;
 
 public class CharacterClient {
 
@@ -9,27 +10,33 @@ public class CharacterClient {
 		// TODO Auto-generated method stub
 		try {
 			DatagramSocket client = new DatagramSocket();
-			client.connect(InetAddress.getLocalHost(), 60000);
+			Scanner s = new Scanner(System.in);
+
+			client.connect(InetAddress.getByName("abila.at"), 60000);
 			byte[] receive = new byte[4];
 			DatagramPacket p = new DatagramPacket(receive, receive.length);
-			client.send(p);
+
+			System.out.print("Press the Return button to send a request...");
 
 			p = new DatagramPacket(receive, 4);
+			byte[] data;
+			int randomReceived;
 
-			client.receive(p);
-			byte[] data = p.getData();
-
-			for (byte b : data) {
-				System.out.format("0x%x ", b);
+			while(s.nextLine() != null)
+			{
+				client.send(p);
+				p = new DatagramPacket(receive, 4);
+				
+				client.receive(p);
+				data = p.getData();
+				
+				randomReceived = 0;
+				randomReceived |= (data[2] << 8) | data[3];
+				System.out.println(new Integer(randomReceived) + ": " + (char) (new Integer(randomReceived)).intValue());
 			}
 
-			System.out.println();
-			int randomReceived = 0;
-			randomReceived |= (data[2] << 8) | data[3];
-			System.out.println(new Integer(randomReceived));
-			System.out.println((char) (new Integer(randomReceived)).intValue());
-
 			client.close();
+			s.close();
 
 		} catch (SocketException e) {
 			// TODO Auto-generated catch block
